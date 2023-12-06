@@ -7,15 +7,16 @@ import java.io.File
 
 data class Race(val distance: Long, val time:Long)
 
-
 fun Race.GetPossibleSolutions():Long{
-    var res = 0L;
-    for(i in 0 until this.time){
-        if(calculate_time(this.distance, i, this.time))
-            res++;
-    }
-    return res;
+    return (0..this.time)
+        .map{
+            calculate_time(this.distance, it, this.time)
+        }.count{
+            it
+        }.toLong()
 }
+
+
 fun calculate_time(distance: Long, velocity: Long, totalTime:Long):Boolean{
     var distance_traveled = velocity*(totalTime-velocity);
     return (distance_traveled>distance);
@@ -50,12 +51,10 @@ fun main(){
         val res = data1.map {it.GetPossibleSolutions() }.reduce{acc, value -> acc*value};
         println(res)
     }
-
     fun part2(){
         println(data2)
         println(data2.GetPossibleSolutions())
     }
-
     part2()
 
 }
