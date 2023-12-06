@@ -1,22 +1,6 @@
 package day5
 import java.io.File
 
-fun get_next_number_from_row(value: List<Long?>, nr: Long): Long
-{
-        var result: Long = nr
-        val dest_range = value[0]!!
-        val source_range = value[1]!!
-        val range = value[2]!!
-
-        if(nr >= source_range && nr <= source_range+range)
-        {
-            val diff = nr - source_range
-            result = (diff + dest_range)
-        }
-
-
-    return result;
-}
 fun get_next_number_from_map(map: MutableList<List<Long?>>, nr: Long): Long
 {
     var result: Long = nr;
@@ -193,13 +177,6 @@ fun main()
     }
 
     part2()
-//    var map = mutableListOf(listOf<Long?>());
-//    var firstLine = listOf(50u, 98u, 2u);
-//    var secondLine = listOf(52u, 50u,48u);
-//    map.clear()
-//    map.add(firstLine);
-//    map.add(secondLine);
-//    var res = reverse_get_next_number_from_map(map, 81u);
 
     fun part1() {
         val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day5\\input.txt";
