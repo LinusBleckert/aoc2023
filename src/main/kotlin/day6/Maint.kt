@@ -7,18 +7,18 @@ import java.io.File
 
 data class Race(val distance: Long, val time:Long)
 
-fun calculate_time(distance: Long, velocity: Long, totalTime:Long):Boolean{
-    var distance_traveled = velocity*(totalTime-velocity);
-    return (distance_traveled>distance);
-}
-fun get_possible_solutions(race:Race):Long{
 
+fun Race.GetPossibleSolutions():Long{
     var res = 0L;
-    for(i in 0 until race.time){
-        if(calculate_time(race.distance, i, race.time))
+    for(i in 0 until this.time){
+        if(calculate_time(this.distance, i, this.time))
             res++;
     }
     return res;
+}
+fun calculate_time(distance: Long, velocity: Long, totalTime:Long):Boolean{
+    var distance_traveled = velocity*(totalTime-velocity);
+    return (distance_traveled>distance);
 }
 
 fun get_race_pairs(input: List<String>):List<Race>
@@ -47,13 +47,13 @@ val data2 = get_race_part2(File(fileName).readLines())
 fun main(){
     //val race1 = Race(9,7)
     fun part1(){
-        val res = data1.map { get_possible_solutions(it) }.reduce{acc, value -> acc*value};
+        val res = data1.map {it.GetPossibleSolutions() }.reduce{acc, value -> acc*value};
         println(res)
     }
 
     fun part2(){
         println(data2)
-        println(get_possible_solutions(data2))
+        println(data2.GetPossibleSolutions())
     }
 
     part2()
