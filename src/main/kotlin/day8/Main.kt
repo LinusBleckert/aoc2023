@@ -14,10 +14,7 @@ val map = File(filePath).useLines { lines ->
             }.toMap()
 }
 
-
-
 fun AllLocationEndInZ(locations: List<Location>): Boolean{
-
     locations.forEach {
         if(!it.location.endsWith('Z'))
             return false
@@ -26,7 +23,6 @@ fun AllLocationEndInZ(locations: List<Location>): Boolean{
 }
 
 fun GetAllStartLocation(locations: List<Location>): MutableList<Location>{
-
     return locations.filter {
         it.location.last() == 'A'
     }.toMutableList()
@@ -42,7 +38,7 @@ fun gcd(a: ULong, b: ULong): ULong = if (b == 0UL) a else gcd(b, a % b)
 fun lcm(a: ULong, b: ULong): ULong = if (a == 0UL || b == 0UL) 0UL else (a * b) / gcd(a, b)
 
 fun main(){
-    fun TestOneLocation(location22: Location):ULong{
+    fun StepsRequired(location22: Location):ULong{
         var steps = 0UL
         var location = location22
         for (i in 0 until Int.MAX_VALUE) {
@@ -64,14 +60,11 @@ fun main(){
     }
 
     var numbers = mutableListOf<ULong>()
-
     GetAllStartLocation(map.values.toList()).forEach{ location ->
-
-        var nr = TestOneLocation(location)
+        var nr = StepsRequired(location)
         numbers.add(nr)
     }
     val lowestMultiple = findLowestCommonMultiple(numbers)
-
     println("Lowest common multiple: $lowestMultiple")
     //println(sum)
 }
