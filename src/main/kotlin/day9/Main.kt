@@ -26,22 +26,13 @@ fun extraPolateNextValue(data: List<List<Int>>): Int{
     return res
 }
 
-fun extraPolatePreviousValue(data: List<List<Int>>): Int{
+fun extraPolatePreviousValue(data: List<List<Int>>): Int {
 
-    var res = 0
-    //var data2 = data.reversed()
-    data.forEachIndexed{i, value ->
-        if(i != data.size)
-            if(i == 0)
-                res = value.first
-            else{
-                res = data[i].first - res
-            }
-        else
-            return res
-    //println(value)
+    return data.map {
+        it.first
+    }.reduce{
+            acc, value -> value - acc
     }
-    return res
 }
 
 fun getNextRow(row: List<Int>): MutableList<List<Int>>{
@@ -58,7 +49,6 @@ fun getNextRow(row: List<Int>): MutableList<List<Int>>{
     }
 }
 
-
 fun main(){
 
     fun Part1():Int{
@@ -69,18 +59,12 @@ fun main(){
         }.sum()
     }
 
-    //print(Part1())
-
     fun Part2():Int{
-
-        return map.map {
-
+        return map.sumOf {
             var data = getNextRow(it)
             data.add(it)
-            var res = extraPolatePreviousValue(data)
-            //println(res)
-            res
-        }.sum()
+            extraPolatePreviousValue(data)
+        }
     }
 
     println(Part2())
