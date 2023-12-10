@@ -27,11 +27,8 @@ fun extraPolateNextValue(data: List<List<Int>>): Int{
 }
 
 fun extraPolatePreviousValue(data: List<List<Int>>): Int {
-
-    return data.map {
-        it.first
-    }.reduce{
-            acc, value -> value - acc
+    return data.map { it.first }.fold(0){acc, value ->
+        value - acc
     }
 }
 
