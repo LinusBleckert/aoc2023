@@ -48,10 +48,17 @@ fun replaceSWithCorrectChar(start:Pair<Int,Int>, map:List<String>){
 
 }
 
+fun theBigLoop(currentPos: Pair<Int,Int>){
+
+}
+
 fun main(){
 
+    var hashMap = mutableMapOf<Pair<Int,Int>, Int>();
     val startPos = findCharPosition('S', map)
     println(startPos)
     // Replace S?
+    hashMap[startPos!!] = 0
+
 
 }
