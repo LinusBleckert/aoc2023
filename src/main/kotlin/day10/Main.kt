@@ -1,32 +1,49 @@
 package day10
 
 import java.io.File
+import java.util.*
+import kotlin.collections.HashSet
 
 val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day10\\testinput.txt";
 
 val map = File(filePath).readLines()
+val XMaxSize = map[0].length
+val YMaxSize = map.size
+
+data class Coordinate(val x:Int, val y:Int)
+fun Coordinate.GetNewCoordinate(diff: Coordinate): Coordinate{
+    return Coordinate(this.x + diff.x, this.y + diff.y)
+}
 
 
+fun getNextPositionsFromTile(pos: Coordinate):List<Coordinate>{
 
-fun getNextPositionsFromTile(ch: Char):List<Pair<Int,Int>>{
-
+    val ch = map[pos.y][pos.x]
     // Return all possible stuff, Create a map with all tiles in maze, replace lowest number of steps
     // Loop all
+    var pair = mutableListOf<Coordinate>();
     when(ch) {
         '|' ->
-            return listOf(Pair(1,0),Pair(-1,0))
+            pair = mutableListOf(Coordinate(0,1),Coordinate(0,-1))
         '-' ->
-            return listOf(Pair(0,-1),Pair(0,1))
+            pair = mutableListOf(Coordinate(1,0),Coordinate(-1,0))
         'L' ->
-            return listOf(Pair(0,1),Pair(-1,0))
+            pair =  mutableListOf(Coordinate(0,-1),Coordinate(1,0))
         'J' ->
-            return listOf(Pair(0,-1),Pair(-1,0))
+            pair =  mutableListOf(Coordinate(-1,0),Coordinate(0,-1))
         '7' ->
-            return listOf(Pair(0,-1),Pair(1,0))
+            pair =  mutableListOf(Coordinate(-1,0),Coordinate(0,1))
         'F' ->
-            return listOf(Pair(0,1),Pair(1,0))
+            pair =  mutableListOf(Coordinate(1,0),Coordinate(0,1))
+        'S' ->
+            // S == F
+            pair =  mutableListOf(Coordinate(0,1),Coordinate(1,0))
         else ->
             return emptyList()
+    }
+
+    return pair.map {
+        pos.GetNewCoordinate(it)
     }
 }
 
@@ -48,17 +65,114 @@ fun replaceSWithCorrectChar(start:Pair<Int,Int>, map:List<String>){
 
 }
 
-fun theBigLoop(currentPos: Pair<Int,Int>){
 
+
+data class Node(val data: Coordinate,
+           var left: Node? = null,
+           var right: Node? = null)
+
+fun setCanReachEdge(set: Set<Coordinate>, maxX:Int, maxY:Int):Boolean{
+    set.forEach{
+        if(it.x == 0 || it.x == maxX)
+            return true
+        if(it.y == 0 || it.y == maxY)
+            return true
+    }
+    return false
 }
 
-fun main(){
+var allSurroundingCoords = listOf(
+    Coordinate(1,0),
+    Coordinate(0,1),
+    Coordinate(-1,0),
+    Coordinate(0,-1)
+)
 
-    var hashMap = mutableMapOf<Pair<Int,Int>, Int>();
-    val startPos = findCharPosition('S', map)
-    println(startPos)
-    // Replace S?
-    hashMap[startPos!!] = 0
+fun main(){
+    //var hashMap = mutableMapOf<Pair<Int,Int>, Int>();
+
+    fun Part1():Set<Coordinate>{
+        val startPos = findCharPosition('S', map)
+        println(startPos)
+        //val rootNode = Node(Coordinate(startPos!!.second, startPos.first), null, null)
+        val queue: Queue<Coordinate> = LinkedList()
+        var currentCoord = Coordinate(startPos!!.second, startPos.first)
+        queue.add(currentCoord)
+        queue.poll()
+        //val currentNode = rootNode
+        val set = HashSet<Coordinate>();
+        set.add(currentCoord)
+        var found = false
+
+        var i = 0
+        var previousNode: Coordinate ?= null
+        while(!found){
+            var pair = getNextPositionsFromTile(currentCoord)
+            var left = pair[0]
+            var right = pair[1]
+            if(left !in set)
+                queue.add(left)
+            if(right !in set)
+                queue.add(right)
+            previousNode = currentCoord
+            set.add(currentCoord)
+            if(queue.isEmpty())
+                return set
+            currentCoord = queue.poll()
+            i++
+            if (currentCoord == previousNode)
+                return set
+
+        }
+        return set
+    }
+
+    var totalSet = HashSet<Coordinate>();
+    map.forEachIndexed{indexy, y ->
+        y.forEachIndexed {indexx, x ->
+            totalSet.add(Coordinate(indexx,indexy))
+        }
+    }
+    var loopSet = Part1()
+
+    var notLoopSet = totalSet-(loopSet)
+
+    //Loop totalset until none remains
+
+    fun GetAllConnectingCoords(startCoord: Coordinate, loopSet: Set<Coordinate>): Set<Coordinate>{
+        val queue: Queue<Coordinate> = LinkedList()
+        var currentCoord = startCoord
+        queue.add(currentCoord)
+        val set = HashSet<Coordinate>();
+        set.add(currentCoord)
+            //var pair = getNextPositionsFromTile(currentCoord)
+        while(queue.isNotEmpty()){
+            currentCoord = queue.poll()
+                allSurroundingCoords.forEach {
+                    var newCoord = currentCoord.GetNewCoordinate(it)
+                    if(newCoord.x >= 0 && newCoord.x < XMaxSize)
+                        if(newCoord.y >= 0 && newCoord.y < YMaxSize)
+                            if(newCoord !in set)
+                            // If this coord does not exist in loopCoords
+                                if(newCoord !in loopSet)
+                                    // check for pipe?? lmfao
+                                    queue.add(newCoord)
+                }
+            set.add(currentCoord)
+        }
+        return set
+    }
+
+    var asd = true
+    while(notLoopSet.isNotEmpty()){
+
+        val currentCoord = notLoopSet.first()
+        // Get all connecting coords?
+        val asd2 = GetAllConnectingCoords(currentCoord, loopSet)
+        notLoopSet = notLoopSet - asd2
+        println(asd2.size)
+        // how the fuck do i find the connecting loopsets kind of?
+    }
 
 
 }
