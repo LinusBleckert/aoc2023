@@ -71,11 +71,11 @@ data class Node(val data: Coordinate,
            var left: Node? = null,
            var right: Node? = null)
 
-fun setCanReachEdge(set: Set<Coordinate>, maxX:Int, maxY:Int):Boolean{
+fun setCanReachEdge(set: Set<Coordinate>):Boolean{
     set.forEach{
-        if(it.x == 0 || it.x == maxX)
+        if(it.x == 0 || it.x == XMaxSize- 1)
             return true
-        if(it.y == 0 || it.y == maxY)
+        if(it.y == 0 || it.y == YMaxSize-1)
             return true
     }
     return false
@@ -163,15 +163,40 @@ fun main(){
         return set
     }
 
-    var asd = true
-    while(notLoopSet.isNotEmpty()){
 
+
+    val charArray2D = Array(YMaxSize) { CharArray(XMaxSize) }
+    var asd = true
+    var str = "ASDASDASD"
+    //str[2]
+
+    loopSet.forEach {
+        charArray2D[it.y][it.x] = map[it.y][it.x]
+    }
+    //val newMap = mutableListOf(map.)
+    while(notLoopSet.isNotEmpty()){
         val currentCoord = notLoopSet.first()
         // Get all connecting coords?
         val asd2 = GetAllConnectingCoords(currentCoord, loopSet)
         notLoopSet = notLoopSet - asd2
-        println(asd2.size)
-        // how the fuck do i find the connecting loopsets kind of?
+        if(setCanReachEdge(notLoopSet))
+            notLoopSet.forEach {
+                charArray2D[it.y][it.x] = '0'
+                //var originalStringBuilder = map[it.y]
+                //originalStringBuilder.setCharAt(indexToChange, charToReplace)
+                //map.get(it.y) = "asd"
+            }
+        else
+            notLoopSet.forEach {
+                charArray2D[it.y][it.x] = '1'
+            }
+
+    }
+    for (row in charArray2D) {
+        for (char in row) {
+            print("$char ")
+        }
+        println()
     }
 
 
