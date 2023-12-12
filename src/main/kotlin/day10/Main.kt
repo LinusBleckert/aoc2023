@@ -4,7 +4,7 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashSet
 
-val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day10\\testinput.txt";
+val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day10\\input.txt";
 
 val map = File(filePath).readLines()
 val XMaxSize = map[0].length
@@ -155,8 +155,9 @@ fun main(){
                             if(newCoord !in set)
                             // If this coord does not exist in loopCoords
                                 if(newCoord !in loopSet)
+                                    if(newCoord !in queue)
                                     // check for pipe?? lmfao
-                                    queue.add(newCoord)
+                                        queue.add(newCoord)
                 }
             set.add(currentCoord)
         }
@@ -174,21 +175,26 @@ fun main(){
         charArray2D[it.y][it.x] = map[it.y][it.x]
     }
     //val newMap = mutableListOf(map.)
+    var sum = 0
+    var outside = 0
     while(notLoopSet.isNotEmpty()){
         val currentCoord = notLoopSet.first()
         // Get all connecting coords?
         val asd2 = GetAllConnectingCoords(currentCoord, loopSet)
         notLoopSet = notLoopSet - asd2
-        if(setCanReachEdge(notLoopSet))
-            notLoopSet.forEach {
+        if(setCanReachEdge(asd2))
+            asd2.forEach {
                 charArray2D[it.y][it.x] = '0'
                 //var originalStringBuilder = map[it.y]
                 //originalStringBuilder.setCharAt(indexToChange, charToReplace)
                 //map.get(it.y) = "asd"
+                outside += 1
             }
         else
-            notLoopSet.forEach {
+            asd2.forEach {
                 charArray2D[it.y][it.x] = '1'
+
+                sum += 1
             }
 
     }
@@ -199,5 +205,6 @@ fun main(){
         println()
     }
 
-
+    println(sum)
+    println(outside)
 }
