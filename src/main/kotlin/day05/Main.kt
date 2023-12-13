@@ -1,4 +1,4 @@
-package day5
+package day05
 import java.io.File
 
 fun get_next_number_from_map(map: MutableList<List<Long?>>, nr: Long): Long

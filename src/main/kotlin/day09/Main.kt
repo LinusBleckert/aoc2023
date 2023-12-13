@@ -1,6 +1,5 @@
-package day9
+package day09
 
-import day8.Location
 import java.io.File
 
 

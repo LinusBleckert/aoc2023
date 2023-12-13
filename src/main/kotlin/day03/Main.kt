@@ -1,4 +1,4 @@
-package day3
+package day03
 import java.io.File
 
 fun is_valid_symbol(c : Char): Boolean {

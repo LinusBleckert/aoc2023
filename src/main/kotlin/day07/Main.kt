@@ -1,6 +1,5 @@
-package day7
+package day07
 
-import day6.get_race_pairs
 import java.io.File
 
 enum class Type
