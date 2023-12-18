@@ -1,8 +1,9 @@
 package day15
 
 import java.io.File
+import java.lang.IllegalArgumentException
 
-val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day15\\testinput.txt";
+val filePath = "C:\\Users\\Bleckert\\IdeaProjects\\aoc2023\\src\\main\\kotlin\\day15\\input.txt";
 val input = File(filePath).readText().split(',')
 val hash = listOf("HASH");
 
@@ -10,7 +11,7 @@ fun getAsciiValue(char: Char):Int{
     return char.code
 }
 
-data class algo(val box: Int, val operation: Char, val focalLength: Int, val label: String)
+data class algo(val box: Int, val operation: Char, var focalLength: Int, val label: String)
 
 
 
@@ -37,38 +38,39 @@ fun main()
         }
 
         var asd = input.map{
-            val box = it.substring(0,2).fold(0){
+
+            var label = it.substring(0,it.length-2)
+            var operation = it[it.length-2]
+            var focal = -1
+            if(it.last().isDigit()){
+                focal = it.last().digitToInt()
+            }
+            else{
+                operation = it[it.length-1]
+                label = it.substring(0,it.length-1)
+            }
+            val box = label.fold(0){
                 acc, value->
                 (((acc + getAsciiValue(value))*17) % 256)
             }
-            if(it.length == 4)
-                algo(box, it[2], it[3].digitToInt(), it.substring(0,2))
-            else
-                algo(box, it[2], -1, it.substring(0,2))
+            algo(box, operation, focal, label)
         }//.reduce{acc, value -> acc + value}
 
         asd.forEach {
             if(it.operation=='='){
-
                 var list = hashmap[it.box]
-                if(!list!!.contains(it))
-                    hashmap[it.box]!!.add(it)
-                else{
-                    var toBeRemoved: Int? = null
-                    list!!.forEachIndexed{ index, algoInBox ->
-                        if(algoInBox.label == it.label)
+                // this is wrong, need to loop list and see if its label exists?
+                var replaced = false
+                list!!.forEach{ algoInBox ->
+                    if(algoInBox.label == it.label){
+                        replaced = true
                         //remove it?
-                            toBeRemoved = index
+                        algoInBox.focalLength = it.focalLength
                     }
-                    if(toBeRemoved != null){
-                        // GEt index and add it ther
-                        //list.remove(toBeRemoved)
-                        list.remove(list[toBeRemoved!!])
-                        list.add(toBeRemoved!!, it)
-
-                    }
-                    hashmap[it.box] = list
                 }
+                if(!replaced)
+                    list.add(it)
+
 
             }
             else{
